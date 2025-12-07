@@ -1,0 +1,163 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background: black;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Loader Container */
+.loader {
+ position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;   /* FIXED */
+    background: black;
+    overflow: hidden;
+}
+
+/* ==========================================
+   RESPONSIVE DIGIT WRAPPER
+   - Uses vw for width
+   - Uses aspect-ratio to maintain shape
+   ========================================== */
+.counter-wrapper {
+    position: relative;
+    width: 22vw;                  /* larger for small screens */
+    aspect-ratio: 1 / 2;          /* height = 2× width */
+    max-width: 160px;
+    max-height: 320px;
+    min-width: 70px;
+    min-height: 140px;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    overflow: hidden;
+    left: -10%;
+}
+
+/* Digit Track */
+.count {
+    display: flex;
+    height: 100%;
+    width: max-content;
+    transform: translateX(-100%);
+    will-change: transform;
+}
+
+/* Each Digit Box */
+.digit {
+    width: 22vw;
+    aspect-ratio: 1 / 2;
+    max-width: 160px;
+    max-height: 320px;
+    min-width: 70px;
+    min-height: 140px;
+    position: relative;
+    
+}
+
+/* ==========================================
+   RESPONSIVE FONT SIZE
+   Works on ultra small phones also.
+   ========================================== */
+.digit h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(90px, 20vw, 280px);
+    line-height: 1;
+    font-weight: 300;
+    white-space: nowrap;
+}
+
+/* SVG Revealers */
+.revealer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(80px, 18vw, 150px);
+    height: auto;
+}
+
+
+   .hero {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to bottom, #0a0a0a, #1a1a1a);
+    color: white;
+    position: relative;
+    z-index: -1;
+   
+}
+
+
+
+.hero-content {
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: clamp(32px, 6vw, 80px);
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: clamp(16px, 3vw, 28px);
+    margin-bottom: 20px;
+}
+
+.hero button {
+    padding: clamp(10px, 2vw, 20px) clamp(20px, 4vw, 40px);
+    font-size: clamp(14px, 2.5vw, 20px);
+    border: none;
+    cursor: pointer;
+    background-color: #0afa0e;
+    color: black;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.hero button:hover {
+    background-color: #08c207;
+    transform: scale(1.05);
+}
+
+/* ================================
+   MEDIA QUERIES FOR SMALL SCREENS
+================================ */
+@media (max-width: 768px) {
+    .counter-wrapper {
+        width: 25vw;
+        min-width: 50px;
+    }
+    .digit h1 {
+        font-size: clamp(60px, 15vw, 220px);
+    }
+    .revealer {
+        width: clamp(60px, 20vw, 120px);
+    }
+}
+
+@media (max-width: 480px) {
+    .counter-wrapper {
+        width: 30vw;
+        min-width: 40px;
+    }
+    .digit h1 {
+        font-size: clamp(50px, 18vw, 180px);
+    }
+    .revealer {
+        width: clamp(50px, 20vw, 100px);
+    }
+}
