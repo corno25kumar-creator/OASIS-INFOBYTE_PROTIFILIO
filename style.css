@@ -1,0 +1,315 @@
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+body { 
+    background: #000;
+    color: #fff;
+    font-family: sans-serif;
+    /* CHANGE THIS: Allow vertical scroll for ScrollTrigger to work */
+    overflow-x: hidden; 
+    overflow-y: auto;
+    }
+
+.cursor-follower {
+  position: fixed;
+    width: 60px;
+    height: 60px;
+    border: 2px solid #fff; /* White border looks best with blend modes */
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    /* This makes the circle invert colors of whatever is underneath */
+    mix-blend-mode: difference; 
+    transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1), 
+                height 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.satellite {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    left: 50%;
+    top: -4px;
+    transform-origin: 50% 34px;
+    transition: transform-origin 0.5s ease;
+}
+.cursor-follower.is-active {
+    width: 150px; /* Gets much bigger for the "color change" area */
+    height: 150px;
+    background: #fff; /* When it fills with white, it fully inverts the text inside */
+}
+
+.cursor-follower.is-active .satellite {
+    transform-origin: 50% 79px; /* Adjust satellite to stay on new edge */
+    background: #000; /* Contrast against the white background */
+}
+
+.loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #000;
+    display: flex;
+    align-items: flex-end;
+}
+
+.counters-container {
+    position: absolute;
+    display: flex;
+    bottom: 10vh; /* Lifted slightly to avoid bottom screen edge */
+    left: 0;
+}
+
+.counter-wrapper {
+    width: 20vw;
+    /* Height must be large enough to accommodate the scaleY(1.6) stretch */
+    height: 40vh; 
+    overflow: hidden; 
+    flex-shrink: 0;
+    display: flex;
+    align-items: center; /* Centers the number vertically in the window */
+}
+
+.count { display: flex; height: 100%; width: max-content; }
+
+.digit { 
+    width: 20vw; 
+    height: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    flex-shrink: 0; 
+}
+
+.digit h1 {
+    /* Adjusted font size to be safer for all screens */
+    font-size: clamp(80px, 15vw, 220px);
+    font-weight: 900;
+    
+    /* THE FIXES FOR CUTTING: */
+    transform: scaleY(1.6); 
+    line-height: 1.2; /* Increased from 1 to give vertical breathing room */
+    padding: 40px 0;  /* Adds internal space so the stretch doesn't hit the box edge */
+    
+    letter-spacing: -5px;
+    display: block;
+    will-change: transform;
+}
+
+/* Ensure Home Content is ready but hidden */
+#home-content {
+    width: 100vw; height: 100vh;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 50px;
+}
+
+.revealer {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+.revealer svg { width: 10vw; min-width: 150px; transform: scale(0); }
+
+/* Laptop/Desktop Adjustments to prevent overflow */
+@media (min-width: 1024px) {
+    .counter-wrapper, .digit { width: 15vw; }
+}
+
+@media (min-width: 2560px) {
+    .counter-wrapper, .digit { width: 10vw; height: 50vh; }
+    .digit h1 { font-size: 350px; padding: 100px 0; }
+}
+
+/* --- Home Page Layout --- */
+#home-content {
+    width: 100vw;
+    height: 100vh;
+    visibility: hidden;
+    position: relative;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    padding: 0 5vw;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; }
+.nav-logo span { color: #0AFA0E; }
+
+.nav-links { display: flex; align-items: center; gap: 40px; }
+.nav-links a { 
+    color: #fff; text-decoration: none; font-size: 14px; 
+    text-transform: uppercase; font-weight: 500; opacity: 0.7; transition: 0.3s;
+}
+.nav-links a:hover { opacity: 1; }
+
+.nav-btn {
+    padding: 12px 24px;
+    border: 1px solid #fff;
+    border-radius: 50px;
+    font-size: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.nav-btn:hover { background: #fff; color: #000; }
+
+/* Hero Section */
+.hero-container {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.hero-tagline { 
+    font-size: 14px; text-transform: uppercase; 
+    margin-bottom: 20px; display: block; overflow: hidden;
+}
+.hero-tagline span { color: #0AFA0E; margin-right: 10px; }
+
+.title-row { overflow: hidden; height: auto; }
+.reveal-text {
+    font-size: clamp(60px, 12vw, 180px);
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+}
+
+.outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.5);
+}/* --- ALIGNMENT FIX --- */
+#home-content {
+    width: 100vw; height: 100vh;
+    display: flex; flex-direction: column;
+    visibility: hidden; /* Controlled by GSAP */
+}
+
+.navbar {
+    width: 100%; height: 100px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 5vw;
+}
+
+.hero-center {
+    flex-grow: 1; /* Takes up all available space between nav and footer */
+    display: flex; 
+    align-items: center; /* Vertical Center */
+    justify-content: center; /* Horizontal Center */
+    text-align: center;
+}
+
+.line-hide { overflow: hidden; } /* Crucial for the reveal animation */
+
+.reveal-text {
+    font-size: clamp(40px, 10vw, 150px);
+    font-weight: 900; line-height: 1;
+}
+.outline { color: transparent; -webkit-text-stroke: 1px white; }
+
+.hero-sub { margin-top: 20px; opacity: 0.6; font-size: 18px; }
+.hero-tag { color: #0AFA0E; font-weight: 700; letter-spacing: 2px; font-size: 12px; margin-bottom: 10px; display: block; }
+
+.hero-footer {
+    height: 80px; display: flex; justify-content: space-between;
+    padding: 0 5vw; align-items: center; opacity: 0.4; font-size: 10px;
+}
+
+/* --- CURSOR & RIPPLE (As requested previously) --- */
+.cursor-main {
+    width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none;
+    z-index: 10000; mix-blend-mode: difference; display: flex; justify-content: center; align-items: center;
+}
+.cursor-moon { width: 8px; height: 8px; background: #0AFA0E; border-radius: 50%; position: absolute; top: -4px; }
+.cursor-main.active { width: 120px; height: 120px; background: #0AFA0E; border: none; }
+/* Mobile Tweaks */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero-footer { flex-direction: column; gap: 10px; justify-content: center; }
+}
+
+
+body {
+    /* Lenis needs natural overflow to calculate scroll */
+    overflow-x: hidden; 
+    overflow-y: auto; 
+}
+
+.work-section {
+    position: relative;
+    width: 100%;
+    /* Let GSAP calculate height. If you must set it, use a large value */
+    height: auto; 
+    background: #000;
+}
+
+.work-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* This stays hidden to clip the horizontal track */
+}
+
+.work-track {
+    display: flex;
+    flex-wrap: nowrap;
+    width: max-content; /* Critical: Allows the track to be wider than the screen */
+    height: 100vh;
+}
+
+.project-panel {
+    width: 100vw;
+    height: 100vh;
+    flex-shrink: 0; /* Prevents the panels from squishing into 100vw */
+}
+
+.project-content {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr; /* Image wider than text */
+    gap: 5vw;
+    width: 85%;
+    align-items: center;
+}
+
+.project-media {
+    height: 55vh;
+    background: #111;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.project-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.about-section {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    background: #000;
+    padding: 10vh 5vw;
+}
