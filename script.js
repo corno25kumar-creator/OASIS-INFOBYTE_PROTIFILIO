@@ -73,64 +73,56 @@ window.onload = () => {
       .from(".navbar", { y: -100, opacity: 0, duration: 1.2 }, "-=0.8")
       .from(".reveal-text", { y: 150, skewY: 7, stagger: 0.1, duration: 1.5, ease: "power4.out" }, "-=1.2")
       .from(".hero-tag, .hero-sub, .hero-footer", { opacity: 0, y: 20, stagger: 0.1, duration: 1 }, "-=0.8");
-// --- Inside window.onload ---
-// --- WORK SECTION PINNING (NO GAPS) ---
-if (workTrack) {
-    gsap.to(workTrack, {
-        x: () => -(workTrack.scrollWidth - window.innerWidth),
-        ease: "none",
+// --- Inside wi
+   // --- WORK SECTION: PRECISE PINNING ---
+    if (workTrack) {
+        gsap.to(workTrack, {
+            x: () => -(workTrack.scrollWidth - window.innerWidth),
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".work-section",
+                start: "top top",
+                // This formula ensures the pin releases exactly when the 3rd project ends
+                end: () => "+=" + (workTrack.scrollWidth - window.innerWidth),
+                scrub: 1,
+                pin: true,
+                anticipatePin: 1,
+                invalidateOnRefresh: true
+            }
+        });
+    }
+
+    // --- ABOUT SECTION: MICRO-ANIMATIONS ---
+    const aboutTL = gsap.timeline({
         scrollTrigger: {
-            trigger: ".work-section",
-            start: "top top",
-            // This 'end' matches the scroll distance exactly
-            end: () => "+=" + (workTrack.scrollWidth - window.innerWidth),
-            scrub: 1,
-            pin: true,
-            anticipatePin: 1
+            trigger: ".about-section",
+            start: "top 80%", // Triggers when the top of About hits 80% of screen height
+            toggleActions: "play none none reverse"
         }
     });
-}
 
-// --- ABOUT SECTION ARRIVAL ANIMATION ---
-const aboutTL = gsap.timeline({
-    scrollTrigger: {
-        trigger: ".about-section",
-        start: "top 60%", // Triggers when section is 60% into view
-        toggleActions: "play none none reverse"
-    }
-});
-
-aboutTL.to(".g-letter", {
-    y: 0,
-    rotate: 0,
-    opacity: 1,
-    duration: 1,
-    stagger: 0.05,
-    ease: "bounce.out"
-})
-.to(".about-reveal", {
-    y: 0,
-    opacity: 1,
-    duration: 0.8
-}, "-=0.5")
-.from(".magnetic-item", {
-    scale: 0,
-    opacity: 0,
-    stagger: 0.1,
-    ease: "back.out(1.7)"
-}, "-=0.3");
-
-// --- MAGNETIC MICRO-ANIMATION ---
-const magnets = document.querySelectorAll('.magnetic-item');
-magnets.forEach((m) => {
-    m.addEventListener('mousemove', (e) => {
-        const bounds = m.getBoundingClientRect();
-        const x = e.clientX - bounds.left - bounds.width / 2;
-        const y = e.clientY - bounds.top - bounds.height / 2;
-        gsap.to(m, { x: x * 0.5, y: y * 0.5, duration: 0.3 });
-    });
-    m.addEventListener('mouseleave', () => {
-        gsap.to(m, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" });
-    });
-});
+    // Gravity for "ABOUT"
+    aboutTL.to(".g-letter", {
+        y: 0,
+        rotate: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        stagger: 0.08,
+        duration: 1,
+        ease: "bounce.out"
+    })
+    // Description Slide-up
+    .to(".about-reveal", {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: "power3.out"
+    }, "-=0.6")
+    // Social Buttons Pop-in
+    .from(".magnetic-item", {
+        scale: 0,
+        opacity: 0,
+        stagger: 0.1,
+        ease: "back.out(1.7)"
+    }, "-=0.4");
 };

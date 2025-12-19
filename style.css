@@ -305,76 +305,56 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-/* --- WORK SECTION GAP FIX --- */
+}/* Ensure no gap between sections */
 .work-section {
-    position: relative;
     width: 100%;
+    overflow: hidden;
     background: #000;
-    overflow: hidden; /* Prevents unwanted white space */
 }
 
 .work-track {
     display: flex;
-    flex-direction: row;
-    width: 300vw; /* 3 projects = 300% width */
-    height: 100vh;
-    will-change: transform;
+    width: max-content; /* Projects stay in a line */
 }
 
-/* --- ABOUT SECTION MICRO-ANIMATIONS --- */
 .about-section {
     position: relative;
-    padding-top: 10vh;
+    min-height: 100vh;
     background: #000;
-    z-index: 5;
-}
-
-.about-content-grid {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-}
-
-.about-extras {
-    display: flex;
-    gap: 30px;
-    margin-top: 20px;
-}
-
-.magnetic-item {
-    padding: 10px 20px;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s;
-}
-
-.magnetic-item:hover {
-    background: #fff;
-    color: #000;
-}
-
-/* Marquee Style */
-.marquee {
-    width: 100%;
+    margin-top: 0; /* Remove gaps */
+    padding: 100px 0;
     overflow: hidden;
-    padding: 60px 0;
+}
+
+/* Marquee Micro-Animation */
+.marquee {
+    display: flex;
+    overflow: hidden;
     white-space: nowrap;
-    opacity: 0.3;
+    opacity: 0.2;
+    padding: 50px 0;
 }
 
 .marquee-inner {
-    display: inline-block;
-    font-size: 8vw;
-    font-weight: 900;
-    text-transform: uppercase;
-    animation: marquee 20s linear infinite;
+    display: flex;
+    animation: marqueeMove 20s linear infinite;
 }
 
-@keyframes marquee {
+.marquee-inner span {
+    font-size: 10vw;
+    font-weight: 900;
+    padding-right: 50px;
+}
+
+@keyframes marqueeMove {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
 }
+
+.g-letter {
+    display: inline-block;
+    transform: translateY(-100px) rotate(15deg);
+    opacity: 0;
+    filter: blur(10px);
+}
+  
