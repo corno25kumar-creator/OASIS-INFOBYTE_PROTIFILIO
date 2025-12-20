@@ -1,58 +1,89 @@
+/* --- RESET & BASE --- */
 * { 
     margin: 0; 
     padding: 0; 
     box-sizing: border-box; 
 }
+
+html.lenis {
+    height: auto;
+}
+
 body { 
     background: #000;
     color: #fff;
-    font-family: sans-serif;
-    /* CHANGE THIS: Allow vertical scroll for ScrollTrigger to work */
+    font-family: 'Inter', sans-serif; /* Recommended high-end font */
     overflow-x: hidden; 
-    overflow-y: auto;
-    }
+}
+/* This ensures the mouse "ignores" these layers and hits the text below */
+.noise, 
+.grid-overlay, 
+.contact-grid-bg,
+.line-hide {
+    pointer-events: none !important;
+}
 
+/* BUT, we need the text inside to actually receive the mouse event */
+.reveal-text, 
+.hero-sub, 
+.hero-tag,
+.nav-item,
+.nav-logo,
+.nav-btn {
+    pointer-events: auto !important;
+}
 .cursor-follower {
-  position: fixed;
-    width: 60px;
-    height: 60px;
-    border: 2px solid #fff; /* White border looks best with blend modes */
+    position: fixed;
+    top: 0; /* Keep at 0 */
+    left: 0; /* Keep at 0 */
+    width: 25px;
+    height: 25px;
+    border: 1px solid #fff;
+    background: transparent;
     border-radius: 50%;
     pointer-events: none;
-    z-index: 10000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: translate(-50%, -50%);
     opacity: 0;
-    /* This makes the circle invert colors of whatever is underneath */
-    mix-blend-mode: difference; 
-    transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1), 
-                height 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 10000;
+    mix-blend-mode: difference;
+    /* Remove any transition: transform; here */
+    transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1), 
+                height 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+                background 0.4s ease;
 }
 
-.satellite {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #fff;
-    border-radius: 50%;
-    left: 50%;
-    top: -4px;
-    transform-origin: 50% 34px;
-    transition: transform-origin 0.5s ease;
-}
 .cursor-follower.is-active {
-    width: 150px; /* Gets much bigger for the "color change" area */
-    height: 150px;
-    background: #fff; /* When it fills with white, it fully inverts the text inside */
+    width: 130px;
+    height: 130px;
+    background: #fff; /* Solid white to invert text */
+    border: none;
+}/* Update these in your style.css */
+.cursor-lens {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;  /* This is the container size */
+    height: 400px;
+    z-index: 999; 
+    pointer-events: none;
+    opacity: 0;
+    border-radius: 15px;
+    overflow: hidden; /* This cuts off the big image */
+    will-change: transform;
 }
 
-.cursor-follower.is-active .satellite {
-    transform-origin: 50% 79px; /* Adjust satellite to stay on new edge */
-    background: #000; /* Contrast against the white background */
+.lens-container {
+    width: 100%;
+    height: 100%;
 }
 
+.lens-img {
+    width: 100%;      /* Forces image to match container width */
+    height: 100%;     /* Forces image to match container height */
+    object-fit: cover; /* Prevents stretching, crops to fit */
+    display: block;
+}
+
+/* --- PRELOADER --- */
 .loader {
     position: fixed;
     inset: 0;
@@ -65,75 +96,40 @@ body {
 .counters-container {
     position: absolute;
     display: flex;
-    bottom: 10vh; /* Lifted slightly to avoid bottom screen edge */
+    bottom: 10vh;
     left: 0;
 }
 
 .counter-wrapper {
-    width: 20vw;
-    /* Height must be large enough to accommodate the scaleY(1.6) stretch */
-    height: 40vh; 
-    overflow: hidden; 
-    flex-shrink: 0;
-    display: flex;
-    align-items: center; /* Centers the number vertically in the window */
+    width: 20vw; height: 40vh; 
+    overflow: hidden; flex-shrink: 0;
+    display: flex; align-items: center;
 }
 
 .count { display: flex; height: 100%; width: max-content; }
 
 .digit { 
-    width: 20vw; 
-    height: 100%; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
+    width: 20vw; height: 100%; 
+    display: flex; justify-content: center; align-items: center; 
     flex-shrink: 0; 
 }
 
 .digit h1 {
-    /* Adjusted font size to be safer for all screens */
     font-size: clamp(80px, 15vw, 220px);
     font-weight: 900;
-    
-    /* THE FIXES FOR CUTTING: */
     transform: scaleY(1.6); 
-    line-height: 1.2; /* Increased from 1 to give vertical breathing room */
-    padding: 40px 0;  /* Adds internal space so the stretch doesn't hit the box edge */
-    
+    line-height: 1.2;
     letter-spacing: -5px;
-    display: block;
-    will-change: transform;
-}
-
-/* Ensure Home Content is ready but hidden */
-#home-content {
-    width: 100vw; height: 100vh;
-    visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 50px;
 }
 
 .revealer {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    pointer-events: none;
 }
 .revealer svg { width: 10vw; min-width: 150px; transform: scale(0); }
 
-/* Laptop/Desktop Adjustments to prevent overflow */
-@media (min-width: 1024px) {
-    .counter-wrapper, .digit { width: 15vw; }
-}
-
-@media (min-width: 2560px) {
-    .counter-wrapper, .digit { width: 10vw; height: 50vh; }
-    .digit h1 { font-size: 350px; padding: 100px 0; }
-}
-
-/* --- Home Page Layout --- */
+/* --- HERO SECTION --- */
 #home-content {
     width: 100vw;
     height: 100vh;
@@ -145,216 +141,596 @@ body {
     padding: 0 5vw;
 }
 
-/* Navbar */
 .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 100px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 20px 5vw;
+    z-index: 1000;
+    
+    /* GLASS EFFECT */
+    background: rgba(255, 255, 255, 0.03); /* Extremely faint white */
+    backdrop-filter: blur(10px);           /* The frosting effect */
+    -webkit-backdrop-filter: blur(10px);    /* Support for Safari */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Subtle shine line */
+    
+    pointer-events: none;
 }
-
-.nav-logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; }
-.nav-logo span { color: #0AFA0E; }
-
-.nav-links { display: flex; align-items: center; gap: 40px; }
-.nav-links a { 
-    color: #fff; text-decoration: none; font-size: 14px; 
-    text-transform: uppercase; font-weight: 500; opacity: 0.7; transition: 0.3s;
-}
-.nav-links a:hover { opacity: 1; }
-
-.nav-btn {
-    padding: 12px 24px;
-    border: 1px solid #fff;
-    border-radius: 50px;
-    font-size: 12px;
-    text-transform: uppercase;
+/* Ensure the items inside the bar are clickable */
+.nav-logo, 
+.menu-trigger {
+    pointer-events: auto; 
     cursor: pointer;
-    transition: 0.3s;
 }
-.nav-btn:hover { background: #fff; color: #000; }
 
-/* Hero Section */
-.hero-container {
-    flex-grow: 1;
+.nav-logo {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: #fff;
+}
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 40%;
+    height: 100vh;
+    background: #000;
+    z-index: 99999;
+    display: flex; 
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 60px 5vw;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    /* GSAP handles the xPercent: 100 hiding */
+}
+
+/* Header styling */
+.menu-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
-.hero-tagline { 
-    font-size: 14px; text-transform: uppercase; 
-    margin-bottom: 20px; display: block; overflow: hidden;
+.menu-close {
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer !important;
+    font-weight: 500;
+    color: #fff;
+    transition: color 0.3s;
+    display: inline-block;
+    width: max-content; /* Narrow hitbox */
 }
-.hero-tagline span { color: #0AFA0E; margin-right: 10px; }
 
-.title-row { overflow: hidden; height: auto; }
-.reveal-text {
-    font-size: clamp(60px, 12vw, 180px);
+.menu-close:hover { color: #0AFA0E; }
+
+/* Main Link Styling */
+.menu-links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start; /* Keeps hitboxes to the left/start */
+}
+
+.menu-link {
+    font-size: clamp(30px, 4.5vw, 70px);
     font-weight: 900;
-    line-height: 0.9;
-    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.4s, color 0.4s, padding-left 0.4s;
+    display: inline-block;
+    width: max-content; /* Hits only the text area */
+    cursor: pointer !important;
 }
 
-.outline {
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255,255,255,0.5);
-}/* --- ALIGNMENT FIX --- */
-#home-content {
-    width: 100vw; height: 100vh;
-    display: flex; flex-direction: column;
-    visibility: hidden; /* Controlled by GSAP */
+.menu-link:hover {
+    background: #0AFA0E; 
+    color: #000;
+    padding-left: 20px;
+    width: 100%; /* Spans full width only on hover for the green background */
 }
 
-.navbar {
-    width: 100%; height: 100px;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0 5vw;
+/* Footer styling */
+.menu-footer {
+    width: 100%;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.social-links-wrap {
+    display: flex;
+    gap: 30px;
+    justify-content: flex-start;
+}
+
+.social-link {
+    color: #ffffff !important; 
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: 500;
+    opacity: 0.6;
+    transition: opacity 0.3s ease, color 0.3s ease;
+    display: inline-block;
+    width: max-content; /* Narrow hitbox */
+    cursor: pointer !important;
+}
+
+.social-link:hover { 
+    opacity: 1; 
+    color: #0AFA0E !important; 
+}
 .hero-center {
-    flex-grow: 1; /* Takes up all available space between nav and footer */
-    display: flex; 
-    align-items: center; /* Vertical Center */
-    justify-content: center; /* Horizontal Center */
-    text-align: center;
+    flex-grow: 1; display: flex; align-items: center; 
+    justify-content: center; perspective: 1200px;
 }
 
-.line-hide { overflow: hidden; } /* Crucial for the reveal animation */
+.hero-text-box { transform-style: preserve-3d; will-change: transform; }
+
+.line-hide { overflow: hidden; }
 
 .reveal-text {
     font-size: clamp(40px, 10vw, 150px);
     font-weight: 900; line-height: 1;
+    display: inline-block;
+    will-change: letter-spacing, transform;
 }
-.outline { color: transparent; -webkit-text-stroke: 1px white; }
 
-.hero-sub { margin-top: 20px; opacity: 0.6; font-size: 18px; }
+.outline { 
+    color: transparent !important; 
+    -webkit-text-stroke: 1px white; 
+}
+
 .hero-tag { color: #0AFA0E; font-weight: 700; letter-spacing: 2px; font-size: 12px; margin-bottom: 10px; display: block; }
+.hero-sub { margin-top: 20px; opacity: 0.6; font-size: 18px; max-width: 500px; margin-inline: auto; }
 
-.hero-footer {
-    height: 80px; display: flex; justify-content: space-between;
-    padding: 0 5vw; align-items: center; opacity: 0.4; font-size: 10px;
-}
+/* --- PROJECTS (STICKY) --- */
+#projects { padding: 10vh 5vw; background: #000; }
 
-/* --- CURSOR & RIPPLE (As requested previously) --- */
-.cursor-main {
-    width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none;
-    z-index: 10000; mix-blend-mode: difference; display: flex; justify-content: center; align-items: center;
-}
-.cursor-moon { width: 8px; height: 8px; background: #0AFA0E; border-radius: 50%; position: absolute; top: -4px; }
-.cursor-main.active { width: 120px; height: 120px; background: #0AFA0E; border: none; }
-/* Mobile Tweaks */
-@media (max-width: 768px) {
-    .nav-links { display: none; }
-    .hero-footer { flex-direction: column; gap: 10px; justify-content: center; }
-}
-
-
-body {
-    /* Lenis needs natural overflow to calculate scroll */
-    overflow-x: hidden; 
-    overflow-y: auto; 
-}
-
-.work-section {
-    position: relative;
-    width: 100%;
-    /* Let GSAP calculate height. If you must set it, use a large value */
-    height: auto; 
-    background: #000;
-}
-
-.work-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden; /* This stays hidden to clip the horizontal track */
-}
-
-.work-track {
-    display: flex;
-    flex-wrap: nowrap;
-    width: max-content; /* Critical: Allows the track to be wider than the screen */
-    height: 100vh;
-}
-
-.project-panel {
-    width: 100vw;
-    height: 100vh;
-    flex-shrink: 0; /* Prevents the panels from squishing into 100vw */
+.project-card {
+    height: 100vh; position: sticky; top: 5vh;
+    margin-bottom: 25vh;
 }
 
 .project-content {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr; /* Image wider than text */
-    gap: 5vw;
-    width: 85%;
-    align-items: center;
+    display: grid; grid-template-columns: 1.1fr 1fr;
+    gap: 50px; height: 85vh; background: #0d0d0d;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 30px; padding: 40px; overflow: hidden;
 }
 
-.project-media {
-    height: 55vh;
-    background: #111;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.1);
+.project-img { position: relative; border-radius: 20px; overflow: hidden; }
+
+.img-curtain {
+    position: absolute; inset: 0; background: #0AFA0E; z-index: 2;
 }
 
-.project-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}/* Ensure no gap between sections */
-.work-section {
-    width: 100%;
-    overflow: hidden;
-    background: #000;
+.project-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.project-details { display: flex; flex-direction: column; justify-content: center; }
+
+.p-title { font-size: clamp(40px, 6vw, 90px); font-weight: 900; margin: 10px 0; line-height: 0.9; }
+
+.p-description { font-size: 18px; color: rgba(255,255,255,0.5); margin-bottom: 50px; line-height: 1.6; }
+
+.mag-link {
+    text-decoration: none; color: #fff; font-size: 11px; font-weight: 700;
+    padding: 18px 35px; border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 100px; display: inline-flex; align-items: center;
 }
 
-.work-track {
-    display: flex;
-    width: max-content; /* Projects stay in a line */
-}
+.live-btn { background: #fff; color: #000; margin-right: 15px; }
+ 
 
-.about-section {
-    position: relative;
+
+#services-interactive {
     min-height: 100vh;
+    width: 100%;
+    padding: 10vh 5vw;
     background: #000;
-    margin-top: 0; /* Remove gaps */
-    padding: 100px 0;
-    overflow: hidden;
-}
-
-/* Marquee Micro-Animation */
-.marquee {
     display: flex;
-    overflow: hidden;
-    white-space: nowrap;
-    opacity: 0.2;
-    padding: 50px 0;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.marquee-inner {
+/* --- HEADER: Side-by-Side Flex --- */
+.services-header {
     display: flex;
-    animation: marqueeMove 20s linear infinite;
+    justify-content: space-between;
+    align-items: flex-end; /* Aligns description with bottom of title */
+    width: 100%;
+    margin-bottom: 8vh; /* Gap between header and list */
 }
 
-.marquee-inner span {
-    font-size: 10vw;
+.header-left {
+    flex: 0 0 50%;
+}
+
+.header-right {
+    flex: 0 0 35%;
+    padding-bottom: 10px; /* Fine-tune alignment with title baseline */
+}
+
+.section-label {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.label-line {
+    width: 30px;
+    height: 1px;
+    background: #0AFA0E;
+}
+
+.section-label span {
+    color: #0AFA0E;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.services-main-title {
+    font-size: clamp(40px, 6vw, 100px);
     font-weight: 900;
-    padding-right: 50px;
+    line-height: 0.9;
+    letter-spacing: -3px;
 }
 
-@keyframes marqueeMove {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+.services-sub-text {
+    font-size: 18px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.5);
 }
 
-.g-letter {
-    display: inline-block;
-    transform: translateY(-100px) rotate(15deg);
+/* --- LIST: Full Width Rows --- */
+.services-list {
+    width: 100%;
+}
+
+.service-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;          
+    height: 11vh; /* Consistent length/height for all rows */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    cursor: pointer;
+}
+
+.service-row:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.service-row:hover {
+    padding-left: 20px;
+}
+
+.row-num {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0AFA0E;
+    min-width: 60px;
+}
+
+.scramble-text {
+    font-size: clamp(24px, 3.5vw, 50px);
+    font-weight: 800;
+    flex-grow: 1;
+    /* REVEAL LOGIC */
+    background: radial-gradient(
+        circle var(--size, 20px) at var(--x, 0px) var(--y, 0px), 
+        #0AFA0E 0%, 
+        #0AFA0E 100%, 
+        #ffffff 100%
+    );
+    background-attachment: fixed;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.s-arrow {
+    font-size: 24px;
+    color: #0AFA0E;
+    opacity: 0.2;
+    transition: 0.4s;
+}
+
+.service-row:hover .s-arrow {
+    opacity: 1;
+    transform: translateX(10px);
+}
+
+#process {
+    padding: 15vh 5vw;
+    background: #000;
+}
+
+/* Matching the flex header from your Services/Projects sections */
+.services-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 100%;
+    margin-bottom: 8vh;
+}
+/* --- PROCESS SECTION STYLES --- */
+#process {
+    padding: 100px 5vw;
+    background: #000;
+}
+
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.process-step {
+    padding: 60px 30px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.4s ease, border-color 0.4s ease;
+    /* Initial state for Gravity effect */
+    opacity: 0; 
+    will-change: transform, opacity;
+}
+
+.process-step:last-child {
+    border-right: none;
+}
+
+.process-step:hover {
+    background: rgba(10, 250, 14, 0.03);
+    border-bottom: 1px solid #0AFA0E;
+}
+
+.step-num {
+    display: block;
+    color: #0AFA0E;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    font-family: 'Inter', sans-serif;
+}
+
+.p-step-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 20px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    display: inline-block; /* Essential for scramble text layout */
+}
+
+.p-step-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.5);
+    transition: color 0.3s ease;
+}
+
+.process-step:hover .p-step-desc {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Responsive Grid */
+@media (max-width: 1024px) {
+    .process-grid { grid-template-columns: repeat(2, 1fr); }
+    .process-step:nth-child(2) { border-right: none; }
+}
+
+@media (max-width: 600px) {
+    .process-grid { grid-template-columns: 1fr; }
+    .process-step { border-right: none; }
+}
+
+/* --- UNIVERSAL GRID (Fills the Empty Feel) --- */
+.grid-overlay, .contact-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 0;
+    mask-image: radial-gradient(circle at center, black, transparent 80%);
+}
+
+/* --- ABOUT TEXT (Micro-Interaction) --- */
+#about {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 0 8vw;
+}
+
+.reveal-type {
+    font-size: clamp(32px, 6vw, 90px);
+    font-weight: 300;
+    line-height: 1.1;
+    z-index: 1;
+}
+
+.reveal-type span {
+    color: #0AFA0E;
+    font-weight: 800;
+    font-style: italic;
+}
+
+/* The dim layer on the left */
+.menu-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px); /* Optional: adds a nice blur */
+    z-index: 999;
+    display: none;
     opacity: 0;
-    filter: blur(10px);
 }
-  
+
+/* The actual menu panel */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 50vw;
+    height: 100vh;
+    background: #000;
+    z-index: 1000;
+    display: none; 
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px;
+    box-shadow: -10px 0 50px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+}
+
+#contact {
+    height: 100vh;
+    width: 100%;
+    background: #000;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Ensure section itself is visible */
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.contact-container {
+    height: 100%;
+    width: 100%;
+    max-width: 1600px;
+}
+
+.bento-grid {
+    display: grid;
+    height: 100%;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1.4fr 1fr;
+    gap: 12px;
+}
+
+.bento-item {
+    background: #0c0c0c;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Prevent JS from hiding boxes */
+    opacity: 1 !important; 
+}
+
+/* Grid Spans */
+.main-cta { grid-column: span 2; }
+.time-card { grid-column: span 2; position: relative; overflow: hidden; }
+.hello-card { grid-column: span 2; background: #0AFA0E; color: #000; }
+
+/* FIXED SOCIALS */
+.socials-card { 
+    display: flex !important; 
+    flex-direction: column; 
+    opacity: 1 !important;
+}
+
+.footer-links { 
+    display: flex !important; 
+    flex-direction: column; 
+    gap: 10px; 
+    flex-grow: 1; 
+    justify-content: center; 
+}
+
+.social-link {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #fff !important;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+    opacity: 1 !important; /* Force visibility */
+}
+
+.social-icon {
+    width: 20px;
+    height: 20px;
+    fill: #fff !important;
+    flex-shrink: 0;
+}
+
+/* Fixed Hover: Background turns green, text/icon turn black for contrast */
+.social-link:hover { 
+    transform: translateX(5px);
+}
+
+.social-link:hover .scramble-text,
+.social-link:hover .social-icon { 
+    color: #000 !important; 
+    fill: #000 !important; 
+}
+
+/* Typography */
+.huge-title { font-size: clamp(3rem, 8vw, 9rem); font-weight: 900; line-height: 0.85; margin: 0; color: #fff; }
+.highlight { color: #0AFA0E; }
+.footer-label { 
+    
+    font-size: 1vw;
+    font-weight: 900; 
+    letter-spacing: 0.1em; 
+    color: rgb(239, 235, 235); 
+    text-transform: uppercase;
+}
+
+/* Time and Ticker */
+.time-value { font-size: 5vw; font-weight: 700; font-family: monospace; color: #fff; }
+.ticker-wrap { background: #111; margin: 0 -24px -24px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+.ticker { display: inline-block; white-space: nowrap; animation: tickerScroll 20s linear infinite; font-size: 11px; opacity: 0.4; color: #fff; }
+
+@keyframes tickerScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+/* Hello Card */
+.email-btn { 
+    font-size: 1.5vw; 
+    font-weight: 800; 
+    color: #000; 
+    text-decoration: none; 
+    border-bottom: 3px solid #000; 
+    align-self: flex-start; 
+    margin: 10px 0;
+ }
+
+
+.footer-bottom-row { 
+    display: flex; justify-content: 
+    space-between; font-size: 10px; 
+    font-weight: 700; 
+    font-size: 1vw;
+    color: #000; 
+     
+}
