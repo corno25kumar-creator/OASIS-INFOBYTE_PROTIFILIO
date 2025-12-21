@@ -1,132 +1,270 @@
-/* ============================================================
-   RESPONSIVE.CSS - STABLE MOBILE REPAIR
-   ============================================================ */
+/* =========================================
+   RESPONSIVE LAYOUT (Mobile & Tablet)
+   Max-width: 768px covers iPads and all Phones
+   ========================================= */
 
-@media (max-width: 768px) {
-    /* 1. Remove Follower & Prevent Horizontal Scroll */
-    .cursor-follower { display: none !important; }
-    html, body { overflow-x: hidden; width: 100%; position: relative; }
+@media screen and (max-width: 768px) {
 
-    /* 2. Preloader Repair */
-    .loader {
-        position: fixed;
-        inset: 0;
-        background: #000;
-        display: flex;
-        align-items: flex-end;
-        justify-content: flex-start;
-        z-index: 9999;
-    }
-
-    .counters-container {
-        position: absolute;
-        bottom: 12vh;
-        left: 5vw;
-        display: flex;
-        gap: 10px; 
-        width: auto !important; /* Let children define width */
-    }
-
-    .counter-wrapper {
-        width: 100px !important; /* Fixed width for GSAP consistency */
-        height: 120px;
-        overflow: hidden;
+    /* --- GLOBAL MOBILE RESETS --- */
+    html, body {
+        overflow-x: hidden !important; /* Prevent horizontal scroll */
+        width: 100%;
         position: relative;
     }
 
-    .count {
-        display: flex; /* Ensures digits stay side-by-side inside the track */
-        height: 100%;
-        width: max-content;
+    /* Disable Custom Cursor (It lags on mobile) */
+    .cursor-follower, .cursor-lens {
+        display: none !important;
     }
 
-    .digit {
-        width: 100px !important; /* Must match counter-wrapper */
-        height: 120px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-shrink: 0;
-    }
-
-    .digit h1 {
-        font-size: 80px;
-        color: #fff;
-        line-height: 1;
-        font-weight: 900;
-        transform: scaleY(1.4);
-    }
-
-    /* 3. Navigation Alignment */
+    /* --- NAVBAR --- */
     .navbar {
-        height: auto;
-        padding: 20px 5vw;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.8); /* readable background */
+        backdrop-filter: blur(10px);
     }
 
-    .nav-links {
-        display: flex !important;
-        gap: 15px;
+    .nav-logo {
+        font-size: 18px;
+        z-index: 1000;
     }
 
-    .nav-links a { font-size: 11px; text-transform: uppercase; }
-    .nav-btn { display: none; }
-
-    /* 4. Home Layout Alignment */
-    #home-content {
-        padding: 0 8vw;
+    /* Full Screen Menu Adjustment */
+    .menu-overlay {
+        width: 100%;
+        padding: 80px 20px; /* More top padding to clear logo */
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        height: 100vh;
+        justify-content: center;
     }
 
-    .hero-center {
-        flex-grow: 1;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start; /* Left aligned for better mobile fill */
-        text-align: left;
+    .menu-link {
+        font-size: 32px; /* Easier to tap, fits screen */
+        margin-bottom: 10px;
+    }
+
+    /* --- HERO SECTION --- */
+    .hero-section {
+        /* Use svh (Small Viewport Height) to fix Safari URL bar jumping issues */
+        height: auto;
+        min-height: 100svh; 
+        padding-top: 120px; /* Space for navbar */
+        padding-bottom: 60px;
     }
 
     .hero-text-box {
-        width: 100%;
-        transform: none !important; /* Disables JS 3D Tilt */
+        transform: none !important; /* Remove 3D tilt */
+        padding: 0 5px;
+        text-align: left; /* Usually looks better on mobile */
     }
 
     .reveal-text {
-        font-size: 50px;
-        line-height: 1;
-        display: block;
-        letter-spacing: 0 !important; /* Disables JS Spacing stretch */
+        /* Clamp scales text smoothly between 32px and 50px */
+        font-size: clamp(32px, 12vw, 50px); 
+        line-height: 1.1;
+        letter-spacing: -1px;
+        word-wrap: break-word; /* Prevents long words breaking layout */
     }
 
     .hero-sub {
         font-size: 16px;
+        line-height: 1.5;
         margin-top: 20px;
-        max-width: 90%;
-        opacity: 0.7;
+        max-width: 100%;
     }
 
-    /* 5. Footer Alignment */
-    .hero-footer {
-        height: 80px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        opacity: 0.5;
-        font-size: 10px;
+    /* --- PROJECTS SECTION --- */
+    #projects {
+        padding: 60px 20px;
     }
 
-    .project-card { height: auto; position: relative; top: 0; margin-bottom: 50px; }
-    .project-content { grid-template-columns: 1fr; height: auto; padding: 25px; }
-    .project-img { height: 350px; }
-    .p-title { font-size: 45px; }
+    .services-main-title {
+        font-size: 40px;
+        margin-bottom: 40px;
+    }
 
-    .service-item { grid-template-columns: 1fr; padding: 30px 0; cursor: default; }
-    .service-hover-img { display: none; } 
+    /* Disable Sticky Stacking Logic */
+    .project-card {
+        height: auto;
+        position: relative !important; /* Force natural flow */
+        top: auto !important;
+        margin-bottom: 40px;
+        transform: none !important;
+        opacity: 1 !important; /* Ensure visible */
+    }
+
+    .project-content {
+        grid-template-columns: 1fr; /* Stack Image and Text */
+        gap: 20px;
+        padding: 20px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .project-img {
+        height: 220px;
+        width: 100%;
+        object-fit: cover; /* Ensures image doesn't stretch */
+        border-radius: 8px;
+    }
+
+    .p-title {
+        font-size: 28px;
+        margin-top: 10px;
+    }
+
+    .p-description {
+        font-size: 15px;
+        line-height: 1.5;
+        margin-bottom: 20px;
+        opacity: 0.8;
+    }
+
+    /* --- SERVICES / PROCESS --- */
+    #services-interactive, #process {
+        padding: 60px 20px;
+    }
+
+    .services-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .service-row {
+        height: auto;
+        padding: 20px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .scramble-text {
+        font-size: 20px; /* Fit on narrow screens */
+    }
+
+    /* Process Grid - Vertical List */
+    .process-grid {
+        grid-template-columns: 1fr;
+        border-top: none;
+    }
+
+    .process-step {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 30px 0;
+    }
+
+    /* --- ABOUT SECTION --- */
+    #about {
+        padding: 60px 20px;
+    }
+
+    .reveal-type {
+        font-size: 24px;
+        line-height: 1.4;
+    }
+
+    /* --- FOOTER (CONTACT) MOBILE OVERRIDES --- */
+#contact {
+    height: auto;
+    min-height: 100svh;
+    padding: 100px 20px 40px;
+    justify-content: flex-start;
+}
+
+.footer-cta-wrap {
+    padding-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+}
+
+.huge-title {
+    font-size: clamp(45px, 14vw, 80px); /* Smaller range for mobile */
+    line-height: 0.9;
+    letter-spacing: -2px;
+    width: 100%;
+}
+
+.cta-circle {
+    /* Reset from absolute to relative to stack naturally below text */
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none !important; /* Disable magnetic pull on touch devices */
+    margin-top: 40px;
+    width: 140px;
+    height: 140px;
+    font-size: 12px;
+    animation: none; /* Disable bounce to save mobile battery/CPU */
+    border: 1px solid #0AFA0E; /* Add border for better visibility */
+}
+
+.footer-info-grid {
+    grid-template-columns: 1fr; /* Stack into single column */
+    gap: 40px;
+    margin-top: 40px;
+    padding-top: 30px;
+}
+
+.info-block {
+    width: 100%;
+}
+
+.time-value {
+    font-size: 32px; /* Fixed size for readability */
+    margin-top: 10px;
+}
+
+.social-links-minimal {
+    gap: 15px;
+}
+
+.s-link {
+    font-size: 16px; /* Tap-friendly size */
+    padding: 5px 0;
+}
+
+.brand-flex {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.brand-logo {
+    font-size: 18px;
+}
+
+.back-to-top {
+    font-size: 14px;
+    opacity: 1; /* Make it more obvious on mobile */
+}
+
+
+}
+
+/* Extra small phone adjustment */
+@media screen and (max-width: 375px) {
+    .huge-title {
+        font-size: 42px;
+    }
+    .cta-circle {
+        width: 120px;
+        height: 120px;
+    }
+}
+/* =========================================
+   SMALL PHONES (iPhone SE, Foldable Outer Screens)
+   Max-width: 375px
+   ========================================= */
+@media screen and (max-width: 375px) {
+    .reveal-text { font-size: 36px; }
+    .p-title { font-size: 24px; }
+    .huge-title { font-size: 40px; }
     
+    .project-content { padding: 15px; }
+    
+    /* Ensure buttons don't overflow */
+    .mag-link {
+        font-size: 14px;
+        padding: 12px 15px;
+    }
 }
